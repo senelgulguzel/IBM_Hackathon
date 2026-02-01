@@ -17,50 +17,50 @@
 ###  The Problem Definition
 
 
-Enterprise customer support centers face a structural inefficiency:
+- Enterprise customer support centers face a structural inefficiency:
 
-~70% of customer complaints are repetitive
+- ~70% of customer complaints are repetitive
 
-Each query is still processed via expensive LLM calls
+- Each query is still processed via expensive LLM calls
 
-This results in:
+- This results in:
 
-High operational cost
+- High operational cost
 
-Agent burnout
+- Agent burnout
 
-Long response latency
+- Long response latency
 
-Inconsistent brand messaging
+- Inconsistent brand messaging
 
-Traditional RAG systems retrieve documents but still always trigger generation, even when verified solutions already exist.
+- Traditional RAG systems retrieve documents but still always trigger generation, even when verified solutions already exist.
 
 The core inefficiency:
-AI systems generate when they should remember.
+- AI systems generate when they should remember.
 
 ### The Solution
 
-Solution Overview — Hybrid RAG + Agentic Orchestration
+- Solution Overview — Hybrid RAG + Agentic Orchestration
 
-We propose a Two-Tier Decision Architecture combining:
+- We propose a Two-Tier Decision Architecture combining:
 
-Vector Memory (Astra DB)
+- Vector Memory (Astra DB)
 
-Reasoning LLM (IBM Watsonx.ai — ibm/granite-3-8b-instruct)
+- Reasoning LLM (IBM Watsonx.ai — ibm/granite-3-8b-instruct)
 
-Agentic Similarity Router (Meta-Controller)
+- Agentic Similarity Router (Meta-Controller)
 
-Instead of always generating responses, our system decides whether generation is necessary.
+- Instead of always generating responses, our system decides whether generation is necessary.
 
-This transforms the architecture from:
+- This transforms the architecture from:
 
-Execution-driven AI → Decision-driven AI
+- Execution-driven AI → Decision-driven AI
 
 ### How It Works
 
-When a customer submits a complaint, our system:
+- When a customer submits a complaint, our system:
 
-Customer Input → Embedding Agent (vectorize)
+- Customer Input → Embedding Agent (vectorize)
                         ↓
                  Astra DB Search
                         ↓
@@ -73,26 +73,26 @@ Customer Input → Embedding Agent (vectorize)
                         ↓
                   Customer Response
 
-Converts the query to embeddings and searches Astra DB's vector store
-The Similarity Router analyzes the match confidence using a dynamic threshold (default 80%)
-High confidence (≥80%): Returns the verified cached response instantly—no LLM call needed
-Low confidence (<80%): Routes to IBM Watsonx.ai agent for real-time reasoning and response generation
+- Converts the query to embeddings and searches Astra DB's vector store
+- The Similarity Router analyzes the match confidence using a dynamic threshold (default 80%)
+- High confidence (≥80%): Returns the verified cached response instantly—no LLM call needed
+- Low confidence (<80%): Routes to IBM Watsonx.ai agent for real-time reasoning and response generation
 
-This "Two-Tier Decision Architecture" is our key innovation. Unlike traditional RAG systems that always generate responses, our agentic router decides whether generation is necessary, acting as an intelligent traffic controller.
+- This "Two-Tier Decision Architecture" is our key innovation. Unlike traditional RAG systems that always generate responses, our agentic router decides whether generation is necessary, acting as an intelligent traffic controller.
 
 ## Operational Flow
 
-Customer submits a complaint.
+- Customer submits a complaint.
 
-Complaint is converted into vector embeddings.
+- Complaint is converted into vector embeddings.
 
-Astra DB retrieves top-N semantically similar historical solutions.
+- Astra DB retrieves top-N semantically similar historical solutions.
 
-Parser agent normalizes and structures retrieved content.
+- Parser agent normalizes and structures retrieved content.
 
-Similarity Router Agent evaluates confidence score.
+- Similarity Router Agent evaluates confidence score.
 
-Routing Logic:
+- Routing Logic:
 
 ≥ 80% similarity
 → Directly return cached verified solution (no LLM call)
@@ -102,19 +102,19 @@ Routing Logic:
 
 ## Why Judges Haven't Seen This Before
 
-Most AI systems optimize how well models generate.
-We optimize whether generation is needed at all.
+- Most AI systems optimize how well models generate.
+- We optimize whether generation is needed at all.
 
-This introduces:
+- This introduces:
 
-Confidence-based routing
+- Confidence-based routing
 
-Meta-agent orchestration
+- Meta-agent orchestration
 
-Decision-first AI pipelines
+- Decision-first AI pipelines
 
-This system is not a chatbot.
+- This system is not a chatbot.
 
-It is an intelligent complaint orchestration engine.
+- It is an intelligent complaint orchestration engine.
 
 
