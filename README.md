@@ -13,9 +13,21 @@
 | 🔌 API Layer | FastAPI ⚡ | Real-time inference & orchestration endpoint |
 | ☁ Cloud Platform | IBM Cloud ☁️ | Scalable enterprise-grade deployment |
 
+## Project Structure
+
+.
+├── agents/               # LangFlow agent definitions  
+├── embeddings/           # Embedding pipelines  
+├── vector_store/         # Astra DB integration  
+├── router/               # Similarity routing logic  
+├── api/                  # FastAPI endpoints  
+├── config/               # Environment & system configs  
+├── main.py               # Entry point  
+└── README.md  
+
+
 
 ###  The Problem Definition
-
 
 - Enterprise customer support centers face a structural inefficiency:
 
@@ -60,18 +72,17 @@ The core inefficiency:
 
 - When a customer submits a complaint, our system:
 
-- Customer Input → Embedding Agent (vectorize)
-                        ↓
-                 Astra DB Search
-                        ↓
-                 Parser Agent (structure)
-                        ↓
-              Similarity Router Agent (decide)
-                        ↓
-                   IF ≥80% → Return cached response
-                   IF <80% → IBM Watsonx Agent (generate)
-                        ↓
-                  Customer Response
+- flowchart LR
+    U[User] --> E[Embedding]
+    E --> V[Vector Search]
+    V --> R[Similarity Router]
+
+    R -->|High confidence| M[Memory Response]
+    R -->|Low confidence| L[LLM Reasoning]
+
+    M --> O[Final Output]
+    L --> O
+
 
 - Converts the query to embeddings and searches Astra DB's vector store
 - The Similarity Router analyzes the match confidence using a dynamic threshold (default 80%)
@@ -79,6 +90,18 @@ The core inefficiency:
 - Low confidence (<80%): Routes to IBM Watsonx.ai agent for real-time reasoning and response generation
 
 - This "Two-Tier Decision Architecture" is our key innovation. Unlike traditional RAG systems that always generate responses, our agentic router decides whether generation is necessary, acting as an intelligent traffic controller.
+
+
+### Structural Inefficiency in Existing Systems
+
+Current enterprise support systems suffer from a combination of:
+
+- **Economic inefficiency:** unnecessary LLM inference costs  
+- **Operational inefficiency:** repeated resolution of identical complaints  
+- **Systemic latency:** avoidable generation delays  
+- **Human overload:** agent burnout from repetitive tasks  
+
+These issues primarily originate from **always-on generation pipelines**.
 
 ## Operational Flow
 
@@ -117,4 +140,41 @@ The core inefficiency:
 
 - It is an intelligent complaint orchestration engine.
 
+
+## Key Architectural Distinction
+
+Traditional RAG systems follow:
+
+Retrieve → Generate  
+
+This system follows:
+
+Retrieve → Decide → Generate (only if needed)
+
+This seemingly small change introduces:
+
+- Cost-aware execution  
+- Latency minimization  
+- Adaptive intelligence  
+- Enterprise scalability
+  
+## References & Resources
+
+- IBM Watsonx.ai Documentation  
+  https://www.ibm.com/products/watsonx-ai  
+
+- DataStax Astra DB Vector Search  
+  https://docs.datastax.com/en/astra-db-serverless/index.html  
+
+- LangFlow  
+  https://github.com/logspace-ai/langflow  
+
+- Hybrid RAG Architecture  
+  https://arxiv.org/abs/2312.10997
+
+  ## License
+
+This project is licensed under the Apache 2.0 License.
+
+See the LICENSE file for details.
 
