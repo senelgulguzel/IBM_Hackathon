@@ -15,7 +15,6 @@
 
 ## Project Structure
 
-.
 ├── agents/               # LangFlow agent definitions  
 ├── embeddings/           # Embedding pipelines  
 ├── vector_store/         # Astra DB integration  
@@ -72,7 +71,8 @@ The core inefficiency:
 
 - When a customer submits a complaint, our system:
 
-- flowchart LR
+```mermaid
+flowchart LR
     U[User] --> E[Embedding]
     E --> V[Vector Search]
     V --> R[Similarity Router]
@@ -82,7 +82,7 @@ The core inefficiency:
 
     M --> O[Final Output]
     L --> O
-
+```
 
 - Converts the query to embeddings and searches Astra DB's vector store
 - The Similarity Router analyzes the match confidence using a dynamic threshold (default 80%)
